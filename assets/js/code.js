@@ -14,65 +14,59 @@ container.addEventListener('click', function (event) {
 });
 
 // Listen for clicks on the Undo button
-undoBtn.addEventListener('click', () => {
-    undoPoints(); // Undo the last point
-    checkLength(); // Check the length of the history for enabling/disabling buttons
-})
+undoBtn.addEventListener('click', undoPoints);
 
 // Listen for clicks on the Redo button
-redoBtn.addEventListener('click', () => {
-    redoPoints(); // Redo a previously undone point
-    checkLength(); // Check the length of the history for enabling/disabling buttons
-})
+redoBtn.addEventListener('click', redoPoints);
 
 // Function to create a point and add it to the history
 function createPoint(coordinateX, coordinateY) {
-    const object = { id: id, x: coordinateX, y: coordinateY };
+    const object = { id: id++, x: coordinateX, y: coordinateY };
     pointsHistory.push(object);
 
     // Create a point element in the container
-    element = `<div class="point" id="point-${id}" style="top: ${coordinateY}px; left: ${coordinateX}px;"></div>`
-    container.innerHTML += element;
-    id++;
-}
+    const element = createPointElement(object);
+    container.appendChild(element);
+};
+
+function createPointElement(point) {
+    const element = document.createElement('div');
+    element.classList.add('point');
+    element.id = `point-${point.id}`;
+    element.style.top = `${point.y}px`;
+    element.style.left = `${point.x}px`;
+    return element;
+};
 
 // Function to undo the last added point
 function undoPoints() {
     const obj = pointsHistory.pop();
-    const objID = obj.id;
-    const coordinateX = obj.x;
-    const coordinateY = obj.y;
-    const elementToRemove = document.getElementById(`point-${objID}`);
-
-    elementToRemove.remove();
-    redo.push({ id: objID, x: coordinateX, y: coordinateY });
+    if (obj) {
+        const elementToRemove = document.getElementById(`point-${obj.id}`);
+        elementToRemove.remove();
+        redo.push(obj);
+    };
+    checkLength(); // Check the length of the history for enabling/disabling buttons
 };
 
 // Function to redo a previously undone point
 function redoPoints() {
     const firstElement = redo.pop();
 
-    // Recreate a point element
-    element = `<div class="point" id="point-${firstElement.id}" style="top: ${firstElement.y}px; left: ${firstElement.x}px;"></div>`
-    container.innerHTML += element;
+    if (firstElement) {
+        // Recreate a point element
+        const element = createPointElement(firstElement);
+        container.appendChild(element);
 
-    const object = { id: firstElement.id, x: firstElement.x, y: firstElement.y };
-    pointsHistory.push(object);
+        pointsHistory.push(firstElement);
+    }
+    checkLength(); // Check the length of the history for enabling/disabling buttons
 };
 
 // Function to check the length of the history arrays and enable/disable buttons
 function checkLength() {
-    if (pointsHistory.length < 1) {
-        undoBtn.setAttribute('disabled', '');
-    } else {
-        undoBtn.removeAttribute('disabled');
-    };
-
-    if (redo.length < 1) {
-        redoBtn.setAttribute('disabled', '');
-    } else {
-        redoBtn.removeAttribute('disabled');
-    };
+    undoBtn.disabled = pointsHistory.length < 1;
+    redoBtn.disabled = redo.length < 1;
 };
 
 // Initially check the length to set the initial button states
