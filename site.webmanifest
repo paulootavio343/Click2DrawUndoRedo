@@ -1,0 +1,23 @@
+{
+    "name": "Click2DrawUndoRedo",
+    "short_name": "Click2Draw",
+    "description": "JavaScript challenge that showcases the capability to track user clicks and place points on the screen where they click.",
+    "start_url": "https://click2drawundoredo.netlify.app/",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "theme_color": "#2657dd",
+    "background_color": "#181818",
+    "display": "standalone"
+}
